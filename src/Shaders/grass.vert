@@ -31,13 +31,31 @@ vec3 rotateY(vec3 vertex, float angle)
     return rotationMatrix * vertex;
 }
 
+vec3 rotateX(vec3 vertex, float angle)
+{
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+    mat3 rotationMatrix = mat3(
+    1.0f,    0.0f,      0.0f,
+    0.0f, cosAngle, -sinAngle,
+    0.0f, sinAngle,  cosAngle
+    );
+    return rotationMatrix * vertex;
+}
+
 void main()
 {
     vec3 pos = inPos;
     float instanceHash = hash11(gl_InstanceID);
     float randomAngle = instanceHash * 2.0f * 3.14159;
 
+    float maxVertexHeight = 1.1f;
+    float heightPercent = pos.y / maxVertexHeight;
+    float randomLeanAngle = hash11(instanceHash) * 0.5f * heightPercent;
+
+    pos = rotateX(pos, randomLeanAngle);
     pos = rotateY(pos, randomAngle);
+
     pos.xz += instanceOffset;
     gl_Position = projectionMatrix * viewMatrix * vec4(pos, 1.0);
 

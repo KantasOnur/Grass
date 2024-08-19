@@ -6,7 +6,7 @@
 #include "Core/Mesh/InstancedMesh.h"
 #include "Core/Mesh/Mesh.h"
 
-#define NUM_GRASS 100
+#define NUM_GRASS 32
 
 Scene::Scene(const Window& window)
 {
@@ -68,14 +68,17 @@ Scene::Scene(const Window& window)
     };
     std::vector<glm::vec2> offsets;
     std::default_random_engine generator;
-    std::uniform_real_distribution distribution(-4.0f,4.0f);
+    std::uniform_real_distribution distribution(-0.2f,0.2f);
 
-    for(int i = 0; i < NUM_GRASS; i++)
+    for(int z = 0; z <= NUM_GRASS; z++)
     {
-        offsets.push_back(glm::vec2(distribution(generator), distribution(generator)));
+        for(int x = 0; x <= NUM_GRASS; x++)
+        {
+            offsets.push_back(glm::vec2((-3.0f+6.0f/NUM_GRASS*x + distribution(generator)), (-3.0f+6.0f/NUM_GRASS*z + distribution(generator))));
+        }
     }
 
-    std::unique_ptr<InstancedMesh> grassBlade = std::make_unique<InstancedMesh>(offsets, grassVertices, grassIndiced, std::make_unique<Shader>("Shaders/basic.vert", "Shaders/basic.frag"));
+    std::unique_ptr<InstancedMesh> grassBlade = std::make_unique<InstancedMesh>(offsets, grassVertices, grassIndiced, std::make_unique<Shader>("Shaders/grass.vert", "Shaders/grass.frag"));
     auto plane = std::make_unique<Mesh>(planeVertices, planeIndices, std::make_unique<Shader>("Shaders/plane.vert", "Shaders/plane.frag"));
 
     meshes_.emplace_back(std::move(grassBlade));
