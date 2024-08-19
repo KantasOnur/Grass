@@ -17,9 +17,10 @@ void Game::run()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while(window_->isOpen())
     {
-        window_->getDeltaTime();
+        //std::cout << 1/window_->getDeltaTime() << std::endl;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         scene_->render();

@@ -1,25 +1,90 @@
 #include "Scene.h"
-#include "Core/Mesh.h"
+
+#include <iostream>
+#include <random>
+
+#include "Core/Mesh/InstancedMesh.h"
+#include "Core/Mesh/Mesh.h"
+
+#define NUM_GRASS 100
 
 Scene::Scene(const Window& window)
 {
-    std::vector<Vertex> vertices = {
-        {{0.0f,  0.5f, -2.0f}},
-        {{-0.1f, -0.5f, -2.0f}},
-        {{0.1f, -0.5f, -2.0f}}
+    std::vector<Vertex> grassVertices = {
+        // Base Quad
+        {{-0.05f, 0.0f, -0.0f}},
+        {{0.05f, 0.0f, -0.0f}},
+        {{-0.05f, 0.25f, -0.0f}},
+        {{0.05f, 0.25f, -0.0f}},
+
+        // Second Quad
+        {{-0.045f, 0.45f, -0.0f}},
+        {{0.045f, 0.45f, -0.0f}},
+
+        // Third Quad
+        {{-0.04f, 0.7f, -0.0f}},
+        {{0.04f, 0.7f, -0.0f}},
+
+        // Fifth Quad
+        {{-0.03, 0.9f, -0.0f}},
+        {{0.03f, 0.9f, -0.0f}},
+
+        // Sixth Quad
+        {{-0.02f, 1.0f, -0.0f}},
+        {{0.02f, 1.0f, -0.0f}},
+
+        // Tip
+        {{0.0f, 1.1f, -0.0f}}
     };
 
-    std::vector<Index> indices = {0, 1, 2};
+    std::vector<Index> grassIndiced = {
+        0, 1, 2,
+        1, 2, 3,
 
-    std::unique_ptr<Mesh> triangle = std::make_unique<Mesh>(vertices, indices, std::make_unique<Shader>("Shaders/basic.vert", "Shaders/basic.frag"));
-    meshes_.emplace_back(std::move(triangle));
+        2, 3, 4,
+        3, 4, 5,
+
+        4, 5, 6,
+        5, 6, 7,
+
+        6, 7, 8,
+        7, 8, 9,
+
+        8, 9, 10,
+        9, 10, 11,
+
+        10, 11, 12
+    };
+
+    std::vector<Vertex> planeVertices = {
+        {{-4.0f, 0.0f, 4.0f}},
+        {{-4.0f, 0.0f, -4.0f}},
+        {{4.0f, 0.0f, 4.0f}},
+        {{4.0f, 0.0f, -4.0f}}
+    };
+    std::vector<Index> planeIndices = {
+        0, 1, 2,
+        1, 2, 3
+    };
+    std::vector<glm::vec2> offsets;
+    std::default_random_engine generator;
+    std::uniform_real_distribution distribution(-4.0f,4.0f);
+
+    for(int i = 0; i < NUM_GRASS; i++)
+    {
+        offsets.push_back(glm::vec2(distribution(generator), distribution(generator)));
+    }
+
+    std::unique_ptr<InstancedMesh> grassBlade = std::make_unique<InstancedMesh>(offsets, grassVertices, grassIndiced, std::make_unique<Shader>("Shaders/basic.vert", "Shaders/basic.frag"));
+    auto plane = std::make_unique<Mesh>(planeVertices, planeIndices, std::make_unique<Shader>("Shaders/plane.vert", "Shaders/plane.frag"));
+
+    meshes_.emplace_back(std::move(grassBlade));
+    meshes_.emplace_back(std::move(plane));
     camera_ = std::make_unique<Camera>(window);
 }
 
 void Scene::render()
 {
-    for(auto& mesh : meshes_)
-    {
-        mesh->draw(*camera_);
-    }
+    meshes_[0]->draw(*camera_);
+    meshes_[1]->draw(*camera_);
 }

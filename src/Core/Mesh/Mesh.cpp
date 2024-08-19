@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include <iostream>
+
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, std::unique_ptr<Shader>&& shader)
 : vertices_(vertices), indices_(indices), shader_(std::move(shader))
 {
@@ -17,8 +19,8 @@ void Mesh::initBuffers()
 
     glBindVertexArray(vao_);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(Index), indices_.data(), GL_STATIC_DRAW);

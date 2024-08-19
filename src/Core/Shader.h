@@ -23,8 +23,11 @@ public:
     GLint getUniformLocation(const std::string& name);
     void setMatrix4f(const std::string& name, const glm::mat4& val);
     void setVec3f(const std::string& name, const glm::vec3& val);
+    void setVec2(const std::string &name, const glm::vec2 &val);
     void setFloat1f(const std::string& name, const float& val);
     void setInt(const std::string& name, const int& val);
+    void setVec2Array(const int& size, const std::string& name, const glm::vec2* array);
+    void instance(const int& size, const std::string& name, const glm::vec2* offsets, const int& vertexCount);
 };
 
 #endif //SHADER_H

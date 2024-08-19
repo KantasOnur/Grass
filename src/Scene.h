@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <vector>
-#include "Core/Mesh.h"
+#include "Core/Mesh/Mesh.h"
 #include "Core/Camera.h"
 class Scene
 {

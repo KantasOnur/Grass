@@ -18,6 +18,8 @@ set(IMGUI_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include/ImGui/imgui_widgets.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include/ImGui/imgui_impl_glfw.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include/ImGui/imgui_impl_opengl3.cpp
+        src/Core/Mesh/InstancedMesh.cpp
+        src/Core/Mesh/InstancedMesh.h
 )
 
 add_executable(playground
@@ -32,7 +34,7 @@ add_executable(playground
         src/Scene.cpp
         src/Scene.h
         src/Core/OpenGL.h
-        src/Core/Mesh.cpp
+        src/Core/Mesh/Mesh.cpp
         src/Core/Shader.cpp
         src/Core/Shader.cpp
         src/Core/Camera.cpp

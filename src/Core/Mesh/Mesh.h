@@ -1,10 +1,10 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "Shader.h"
+#include "../Shader.h"
 #include <glm/glm.hpp>
-
-#include "Camera.h"
+#include "../Camera.h"
+#include <string>
 
 struct Vertex
 {
@@ -15,16 +15,16 @@ using Index = unsigned int;
 
 class Mesh
 {
-private:
+protected:
     std::vector<Vertex> vertices_;
     std::vector<Index> indices_;
-    std::unique_ptr<Shader> shader_;
     unsigned int vao_, vbo_, ibo_;
+    std::unique_ptr<Shader> shader_;
     void initBuffers();
 
 public:
     Mesh(const std::vector<Vertex>& vertices_, const std::vector<Index>& indices_, std::unique_ptr<Shader>&& shader);
-    void draw(const Camera& camera);
+    virtual void draw(const Camera& camera);
 };
 
 #endif //MESH_H
