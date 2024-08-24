@@ -21,6 +21,8 @@ void InstancedMesh::draw(const Camera &camera)
     shader_->bind();
     shader_->setMatrix4f("projectionMatrix", camera.getProjection());
     shader_->setMatrix4f("viewMatrix", camera.getView());
+    shader_->setVec3f("viewPos", camera.getPosition());
+    shader_->setVec3f("lightPos", {0.0f, 1.0f, 0.0f });
     glBindVertexArray(vao_);
     glDrawElementsInstanced(GL_TRIANGLES, (int)indices_.size(), GL_UNSIGNED_INT, nullptr, count_);
     glBindVertexArray(0);

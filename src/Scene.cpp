@@ -6,7 +6,7 @@
 #include "Core/Mesh/InstancedMesh.h"
 #include "Core/Mesh/Mesh.h"
 
-#define NUM_GRASS 32
+#define NUM_GRASS 64
 
 Scene::Scene(const Window& window)
 {
@@ -34,7 +34,7 @@ Scene::Scene(const Window& window)
         {{0.02f, 1.0f, -0.0f}},
 
         // Tip
-        {{0.0f, 1.1f, -0.0f}}
+        {{0.0f, 1.1f, 0.0f}}
     };
 
     std::vector<Index> grassIndiced = {
@@ -70,6 +70,10 @@ Scene::Scene(const Window& window)
     std::default_random_engine generator;
     std::uniform_real_distribution distribution(-0.2f,0.2f);
 
+
+
+
+
     for(int z = 0; z <= NUM_GRASS; z++)
     {
         for(int x = 0; x <= NUM_GRASS; x++)
@@ -78,6 +82,8 @@ Scene::Scene(const Window& window)
         }
     }
 
+
+    //offsets.push_back(glm::vec2(0.0f, 0.0f));
     std::unique_ptr<InstancedMesh> grassBlade = std::make_unique<InstancedMesh>(offsets, grassVertices, grassIndiced, std::make_unique<Shader>("Shaders/grass.vert", "Shaders/grass.frag"));
     auto plane = std::make_unique<Mesh>(planeVertices, planeIndices, std::make_unique<Shader>("Shaders/plane.vert", "Shaders/plane.frag"));
 
@@ -89,5 +95,5 @@ Scene::Scene(const Window& window)
 void Scene::render()
 {
     meshes_[0]->draw(*camera_);
-    meshes_[1]->draw(*camera_);
+    //meshes_[1]->draw(*camera_);
 }

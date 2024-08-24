@@ -9,6 +9,7 @@ class Scene
 private:
     std::vector<std::unique_ptr<Mesh>> meshes_;
     std::unique_ptr<Camera> camera_;
+    std::vector<glm::vec3> lightPositions_;
 public:
     Scene(const Window& window);
     void render();

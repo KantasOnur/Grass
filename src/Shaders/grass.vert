@@ -5,6 +5,18 @@ layout (location = 1) in vec2 instanceOffset;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
+uniform vec3 viewPos;
+uniform vec3 lightPos;
+
+out float widthPercent;
+out vec3 fragPos;
+out vec3 viewCameraPos;
+out vec3 normalL;
+out vec3 normalR;
+out vec3 viewLightPos;
+out vec3 viewDir;
+
+
 uint murmurHash11(uint src) {
     const uint M = 0x5bd1e995u;
     uint h = 1190494759u;
@@ -19,7 +31,7 @@ float hash11(float src) {
     return uintBitsToFloat(h & 0x007fffffu | 0x3f800000u) - 1.0;
 }
 
-vec3 rotateY(vec3 vertex, float angle)
+mat3 rotateY(float angle)
 {
     float cosAngle = cos(angle);
     float sinAngle = sin(angle);
@@ -28,10 +40,10 @@ vec3 rotateY(vec3 vertex, float angle)
     0.0f,      1.0f, 0.0f,
     -sinAngle, 0.0f, cosAngle
     );
-    return rotationMatrix * vertex;
+    return rotationMatrix;
 }
 
-vec3 rotateX(vec3 vertex, float angle)
+mat3 rotateX(float angle)
 {
     float cosAngle = cos(angle);
     float sinAngle = sin(angle);
@@ -40,7 +52,20 @@ vec3 rotateX(vec3 vertex, float angle)
     0.0f, cosAngle, -sinAngle,
     0.0f, sinAngle,  cosAngle
     );
-    return rotationMatrix * vertex;
+    return rotationMatrix;
+}
+
+float InverseLerp(float a, float b, float value) {
+    return (value - a) / (b - a);
+}
+
+mat4 translate(vec3 translation) {
+    return mat4(
+    1.0, 0.0, 0.0, translation.x,
+    0.0, 1.0, 0.0, translation.y,
+    0.0, 0.0, 1.0, translation.z,
+    0.0, 0.0, 0.0, 1.0
+    );
 }
 
 void main()
@@ -53,10 +78,31 @@ void main()
     float heightPercent = pos.y / maxVertexHeight;
     float randomLeanAngle = hash11(instanceHash) * 0.5f * heightPercent;
 
-    pos = rotateX(pos, randomLeanAngle);
-    pos = rotateY(pos, randomAngle);
 
+    widthPercent = smoothstep(-abs(pos.x), abs(pos.x), pos.x);
+
+    vec3 normal = vec3(0.0f, 0.0f, 1.0f);
+
+
+    mat3 grass = rotateY(randomAngle) * rotateX(randomLeanAngle);
+    pos = grass * pos;
     pos.xz += instanceOffset;
-    gl_Position = projectionMatrix * viewMatrix * vec4(pos, 1.0);
 
+
+    normal = mat3(transpose(inverse(viewMatrix))) * grass * normal;
+    viewDir = normalize(vec3(viewMatrix * vec4(lightPos, 1.0f)) - vec3(viewMatrix * vec4(pos, 1.0f)));
+    float viewDirDotNormal = dot(viewDir, normal);
+    float dotProductBool = step(0.0, viewDirDotNormal);
+
+    widthPercent = mix( 1.0 - widthPercent, widthPercent, dotProductBool);
+    normal = mix(-normal, normal, dotProductBool);
+
+    normalL = rotateY(3.14159 * 0.3f) * normal;
+    normalR = rotateY(3.14159 * -0.3f) * normal;
+
+    fragPos = vec3(viewMatrix * vec4(pos, 1.0));
+    viewLightPos = vec3(viewMatrix * vec4(lightPos, 1.0));
+
+    viewCameraPos = vec3(viewMatrix * vec4(viewPos, 1.0f));
+    gl_Position = projectionMatrix * viewMatrix * vec4(pos, 1.0);
 }
