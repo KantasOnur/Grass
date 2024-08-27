@@ -6,7 +6,7 @@
 #include "Core/Mesh/InstancedMesh.h"
 #include "Core/Mesh/Mesh.h"
 
-#define NUM_GRASS 64
+#define NUM_GRASS 128
 
 Scene::Scene(const Window& window)
 {

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <regex>
 
 Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
@@ -16,7 +17,7 @@ Shader::~Shader()
     glDeleteProgram(id_);
 }
 
-unsigned int Shader::createShader(GLenum type, const std::string &sourcePath)
+std::string processShaderFile(const std::string& sourcePath)
 {
     std::ifstream stream(sourcePath);
     std::string source;
@@ -33,6 +34,38 @@ unsigned int Shader::createShader(GLenum type, const std::string &sourcePath)
         std::cout << "Failed to read shader at: " << sourcePath << std::endl;
         exit(EXIT_FAILURE);
     }
+    std::regex includeRegex("(#include <([a-zA-Z]+)>\n)");
+    for(std::smatch sm; std::regex_search(source, sm, includeRegex);)
+    {
+        std::string includeFileSourcePath = "Shaders/" + sm[2].str() + ".glsl";
+        std::string includeFileSource = processShaderFile(includeFileSourcePath);
+        source.replace(sm.position(0), sm.length(0), includeFileSource);
+    }
+    return source;
+}
+
+unsigned int Shader::createShader(GLenum type, const std::string &sourcePath)
+{
+    /*
+    std::ifstream stream(sourcePath);
+    std::string source;
+
+    if(stream)
+    {
+        std::stringstream shaderStream;
+        shaderStream << stream.rdbuf();
+        stream.close();
+        source = shaderStream.str();
+    }
+    else
+    {
+        std::cout << "Failed to read shader at: " << sourcePath << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    */
+
+    std::string source = processShaderFile(sourcePath);
+
 
     unsigned int shader = glCreateShader(type);
     const char* src = source.c_str();

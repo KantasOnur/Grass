@@ -1,5 +1,7 @@
 #include "InstancedMesh.h"
 
+#include "../../Game.h"
+
 InstancedMesh::InstancedMesh(const std::vector<glm::vec2>& positions, const std::vector<Vertex> &vertices_, const std::vector<Index> &indices_, std::unique_ptr<Shader> &&shader)
     :   Mesh(vertices_, indices_, std::move(shader)), count_(positions.size())
 {
@@ -22,7 +24,8 @@ void InstancedMesh::draw(const Camera &camera)
     shader_->setMatrix4f("projectionMatrix", camera.getProjection());
     shader_->setMatrix4f("viewMatrix", camera.getView());
     shader_->setVec3f("viewPos", camera.getPosition());
-    shader_->setVec3f("lightPos", {0.0f, 1.0f, 0.0f });
+    shader_->setVec3f("lightPos", {camera.getPosition()});
+    shader_->setFloat1f("time", Game::window_->getTime());
     glBindVertexArray(vao_);
     glDrawElementsInstanced(GL_TRIANGLES, (int)indices_.size(), GL_UNSIGNED_INT, nullptr, count_);
     glBindVertexArray(0);
