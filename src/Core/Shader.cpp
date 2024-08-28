@@ -12,6 +12,15 @@ Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentS
     createProgram({vShader, fShader});
 }
 
+
+Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath, const std::string& geometryShaderPath)
+{
+    unsigned int vShader = createShader(GL_VERTEX_SHADER, vertexShaderPath);
+    unsigned int fShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderPath);
+    unsigned int gShader = createShader(GL_GEOMETRY_SHADER, geometryShaderPath);
+    createProgram({vShader, fShader, gShader});
+}
+
 Shader::~Shader()
 {
     glDeleteProgram(id_);

@@ -8,6 +8,11 @@
 
 #define NUM_GRASS 128
 
+/*
+ *TODO: Implement some sort of chunking loading and unloading
+ */
+
+
 Scene::Scene(const Window& window)
 {
     std::vector<Vertex> grassVertices = {

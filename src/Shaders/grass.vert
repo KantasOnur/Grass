@@ -10,14 +10,7 @@ uniform mat4 viewMatrix;
 uniform vec3 viewPos;
 uniform vec3 lightPos;
 
-out float widthPercent;
-out vec3 fragPos;
-out vec3 viewCameraPos;
-out vec3 normalL;
-out vec3 normalR;
-out vec3 viewLightPos;
-out vec3 viewDir;
-out float windStrength;
+out float heightPercent;
 
 uint murmurHash11(uint src) {
     const uint M = 0x5bd1e995u;
@@ -77,47 +70,32 @@ float map(float value, float min1, float max1, float min2, float max2) {
 
 void main()
 {
-
-    fnl_state noiseProps = fnlCreateState(1337);
-    noiseProps.noise_type = FNL_NOISE_PERLIN;
-
-
     vec3 pos = inPos;
     float instanceHash = hash11(gl_InstanceID);
-    float randomAngle = instanceHash * 2.0f * 3.14159;
 
     float maxVertexHeight = 1.1f;
-    float heightPercent = pos.y / maxVertexHeight;
+    heightPercent = pos.y / maxVertexHeight;
     float randomLeanAngle = hash11(instanceHash) * 0.8f * heightPercent;
 
-    widthPercent = smoothstep(-abs(pos.x), abs(pos.x), pos.x);
+    float widthPercent = smoothstep(-abs(pos.x), abs(pos.x), pos.x);
 
     vec3 normal = vec3(0.0f, 0.0f, 1.0f);
 
     fnl_state props = fnlCreateState(1337);
     props.noise_type = FNL_NOISE_PERLIN;
-    float windDirection = map(fnlGetNoise2D(props, instanceOffset.x*10.0f+time*10.0f, instanceOffset.y*10.0f+time*10.0f), -1.0f, 0.0f, 1.0f, 2*3.14159f);
-    float windLeanAngle = map(fnlGetNoise2D(props, instanceOffset.x*100.0f+time*100.0f, instanceOffset.y*100.0f+time*100.0f), -1.0f, 0.0f, 1.0f, 0.5f);
 
-    mat3 grass = rotateY(windDirection) * rotateX(randomLeanAngle + windLeanAngle);
-    pos = grass * pos;
+    float windDirection = map(fnlGetNoise2D(props, instanceOffset.x*100.0f+time*10.0f, instanceOffset.y*100.0f+time*10.0f), -1.0f, 0.0f, 1.0f, 2*3.14159f);
+    float windLeanAngle = fnlGetNoise2D(props, instanceOffset.x*30.0f+time*100.0f, instanceOffset.y*30.0f+time*100.0f);
+
+    // More curvy towards the top
+    mat3 grass = rotateY(windDirection) * rotateX(randomLeanAngle + windLeanAngle*heightPercent);
+    pos *= grass;
     pos.xz += instanceOffset;
 
+    // I don't understand why I have to negate the angle. I tried inverse transpose of grass mat, but for some reason that doesn't work.
+    normal =  rotateY(-windDirection) * rotateX(-(randomLeanAngle + windLeanAngle*heightPercent)) * normal;
+    vec3 viewDir = normalize(viewPos - pos);
+    normal = dot(viewDir, normal) >= 0.0f ? normal : -normal;
 
-    normal = mat3(transpose(inverse(viewMatrix))) * grass * normal;
-    viewDir = normalize(vec3(viewMatrix * vec4(lightPos, 1.0f)) - vec3(viewMatrix * vec4(pos, 1.0f)));
-    float viewDirDotNormal = dot(viewDir, normal);
-    float dotProductBool = step(0.0f, viewDirDotNormal);
-
-    widthPercent = mix( 1.0 - widthPercent, widthPercent, dotProductBool);
-    normal = mix(-normal, normal, dotProductBool);
-
-    normalL = rotateY(3.14159 * 0.1f) * normal;
-    normalR = rotateY(3.14159 * -0.1f) * normal;
-
-    fragPos = vec3(viewMatrix * vec4(pos, 1.0));
-    viewLightPos = vec3(viewMatrix * vec4(lightPos, 1.0));
-
-    viewCameraPos = vec3(viewMatrix * vec4(viewPos, 1.0f));
     gl_Position = projectionMatrix * viewMatrix * vec4(pos, 1.0);
 }

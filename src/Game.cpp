@@ -20,9 +20,7 @@ void Game::run()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while(window_->isOpen())
     {
-        //std::cout << 1/window_->getDeltaTime() << std::endl;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         scene_->render();
         EventManager::getInstance().triggerEvent(KeyPressEvent(0, Release));
         window_->update();

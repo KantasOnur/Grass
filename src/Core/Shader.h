@@ -15,6 +15,7 @@ private:
     std::unordered_map<std::string, int> uniformToLocation_;
 public:
     Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+    Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath, const std::string& geometryShaderPath);
     ~Shader();
 
     void bind() const;

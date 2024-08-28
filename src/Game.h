@@ -13,6 +13,7 @@ private:
 public:
     static std::unique_ptr<Window> window_;
     static std::unique_ptr<InputManager> inputManager_;
+    static float time;
     Game();
     void run();
 };
