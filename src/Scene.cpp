@@ -5,6 +5,7 @@
 
 #include "Core/Mesh/InstancedMesh.h"
 #include "Core/Mesh/Mesh.h"
+#include "Core/Mesh/Tile.h"
 
 #define NUM_GRASS 128
 
@@ -77,8 +78,6 @@ Scene::Scene(const Window& window)
 
 
 
-
-
     for(int z = 0; z <= NUM_GRASS; z++)
     {
         for(int x = 0; x <= NUM_GRASS; x++)
@@ -88,12 +87,13 @@ Scene::Scene(const Window& window)
     }
 
 
-    //offsets.push_back(glm::vec2(0.0f, 0.0f));
     std::unique_ptr<InstancedMesh> grassBlade = std::make_unique<InstancedMesh>(offsets, grassVertices, grassIndiced, std::make_unique<Shader>("Shaders/grass.vert", "Shaders/grass.frag"));
     auto plane = std::make_unique<Mesh>(planeVertices, planeIndices, std::make_unique<Shader>("Shaders/plane.vert", "Shaders/plane.frag"));
+    std::unique_ptr<Tile> tiledPlane = std::make_unique<Tile>(std::move(plane), 8, 3);
+    std::unique_ptr<Tile> tiledGrass = std::make_unique<Tile>(std::move(grassBlade), 6, 3);
 
-    meshes_.emplace_back(std::move(grassBlade));
-    meshes_.emplace_back(std::move(plane));
+    meshes_.emplace_back(std::move(tiledGrass));
+    meshes_.emplace_back(std::move(tiledPlane));
     camera_ = std::make_unique<Camera>(window);
 }
 

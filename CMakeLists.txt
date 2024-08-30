@@ -20,6 +20,8 @@ set(IMGUI_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include/ImGui/imgui_impl_opengl3.cpp
         src/Core/Mesh/InstancedMesh.cpp
         src/Core/Mesh/InstancedMesh.h
+        src/Core/Mesh/Tile.cpp
+        src/Core/Mesh/Tile.h
 )
 
 add_executable(playground

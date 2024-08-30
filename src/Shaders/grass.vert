@@ -4,6 +4,7 @@
 layout (location = 0) in vec3 inPos;
 layout (location = 1) in vec2 instanceOffset;
 uniform float time;
+uniform mat4 modelMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
@@ -71,6 +72,7 @@ float map(float value, float min1, float max1, float min2, float max2) {
 void main()
 {
     vec3 pos = inPos;
+    vec3 modelPos = vec3(modelMatrix * vec4(pos, 1.0f));
     float instanceHash = hash11(gl_InstanceID);
 
     float maxVertexHeight = 1.1f;
@@ -84,8 +86,8 @@ void main()
     fnl_state props = fnlCreateState(1337);
     props.noise_type = FNL_NOISE_PERLIN;
 
-    float windDirection = map(fnlGetNoise2D(props, instanceOffset.x*100.0f+time*10.0f, instanceOffset.y*100.0f+time*10.0f), -1.0f, 0.0f, 1.0f, 2*3.14159f);
-    float windLeanAngle = fnlGetNoise2D(props, instanceOffset.x*30.0f+time*100.0f, instanceOffset.y*30.0f+time*100.0f);
+    float windDirection = map(fnlGetNoise2D(props, (modelPos.x+instanceOffset.x)*100.0f+time*10.0f, (modelPos.y+instanceOffset.y)*100.0f+time*10.0f), -1.0f, 0.0f, 1.0f, 2*3.14159f);
+    float windLeanAngle = fnlGetNoise2D(props, (modelPos.x+instanceOffset.x)*30.0f+time*100.0f, (modelPos.y+instanceOffset.y)*30.0f+time*100.0f);
 
     // More curvy towards the top
     mat3 grass = rotateY(windDirection) * rotateX(randomLeanAngle + windLeanAngle*heightPercent);
@@ -97,5 +99,5 @@ void main()
     vec3 viewDir = normalize(viewPos - pos);
     normal = dot(viewDir, normal) >= 0.0f ? normal : -normal;
 
-    gl_Position = projectionMatrix * viewMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(pos, 1.0);
 }

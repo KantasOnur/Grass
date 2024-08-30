@@ -21,6 +21,8 @@ InstancedMesh::InstancedMesh(const std::vector<glm::vec2>& positions, const std:
 void InstancedMesh::draw(const Camera &camera)
 {
     shader_->bind();
+    model_ = glm::translate(model_, position_);
+    shader_->setMatrix4f("modelMatrix", model_);
     shader_->setMatrix4f("projectionMatrix", camera.getProjection());
     shader_->setMatrix4f("viewMatrix", camera.getView());
     shader_->setVec3f("viewPos", camera.getPosition());
@@ -30,4 +32,5 @@ void InstancedMesh::draw(const Camera &camera)
     glDrawElementsInstanced(GL_TRIANGLES, (int)indices_.size(), GL_UNSIGNED_INT, nullptr, count_);
     glBindVertexArray(0);
     shader_->unbind();
+    resetTransform();
 }
