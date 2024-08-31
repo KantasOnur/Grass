@@ -36,7 +36,7 @@ Window::Window(const int& width, const int& height)
     glfwSetWindowSizeCallback(window_, windowResizeCallback);
     glfwSetCursorPosCallback(window_, mouseMoveCallback);
 
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
 }
 
 Window::~Window()

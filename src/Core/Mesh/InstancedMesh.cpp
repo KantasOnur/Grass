@@ -2,8 +2,8 @@
 
 #include "../../Game.h"
 
-InstancedMesh::InstancedMesh(const std::vector<glm::vec2>& positions, const std::vector<Vertex> &vertices_, const std::vector<Index> &indices_, std::unique_ptr<Shader> &&shader)
-    :   Mesh(vertices_, indices_, std::move(shader)), count_(positions.size())
+InstancedMesh::InstancedMesh(const std::vector<glm::vec2>& positions, const std::vector<Vertex> &vertices, const std::vector<Index> &indices, std::unique_ptr<Shader> &&shader)
+    :   Mesh(vertices, indices, std::move(shader)), count_(positions.size())
 {
 
     glBindVertexArray(vao_);

@@ -13,7 +13,7 @@ private:
 public:
     static std::unique_ptr<Window> window_;
     static std::unique_ptr<InputManager> inputManager_;
-    static float time;
+    inline static float deltaTime_ = 0.0f;
     Game();
     void run();
 };

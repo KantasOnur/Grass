@@ -32,7 +32,6 @@ void Tile::draw(const Camera &camera)
         updateTilePositionAndBorders(glm::vec3{0.0f, 0.0f, -tileSize_});
     }
 
-
     int halfTiles = tilesToBeDrawn_ / 2;
 
     for(int x = -halfTiles; x <= halfTiles; ++x)
@@ -44,5 +43,5 @@ void Tile::draw(const Camera &camera)
             mesh_->setPosition(centerTilePosition_);
         }
     }
-    
+
 }

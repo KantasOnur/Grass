@@ -46,7 +46,7 @@ std::string processShaderFile(const std::string& sourcePath)
     std::regex includeRegex("(#include <([a-zA-Z]+)>\n)");
     for(std::smatch sm; std::regex_search(source, sm, includeRegex);)
     {
-        std::string includeFileSourcePath = "Shaders/" + sm[2].str() + ".glsl";
+        std::string includeFileSourcePath = "../src/Shaders/" + sm[2].str() + ".glsl";
         std::string includeFileSource = processShaderFile(includeFileSourcePath);
         source.replace(sm.position(0), sm.length(0), includeFileSource);
     }
@@ -55,24 +55,6 @@ std::string processShaderFile(const std::string& sourcePath)
 
 unsigned int Shader::createShader(GLenum type, const std::string &sourcePath)
 {
-    /*
-    std::ifstream stream(sourcePath);
-    std::string source;
-
-    if(stream)
-    {
-        std::stringstream shaderStream;
-        shaderStream << stream.rdbuf();
-        stream.close();
-        source = shaderStream.str();
-    }
-    else
-    {
-        std::cout << "Failed to read shader at: " << sourcePath << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    */
-
     std::string source = processShaderFile(sourcePath);
 
 

@@ -6,7 +6,6 @@ find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED) # Add this if GLFW is being used.
 
 set(CMAKE_CXX_STANDARD 17)
-
 # Add the ImGui include directory
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/include)
 
@@ -22,6 +21,8 @@ set(IMGUI_SRC
         src/Core/Mesh/InstancedMesh.h
         src/Core/Mesh/Tile.cpp
         src/Core/Mesh/Tile.h
+        src/Core/Mesh/Grass.cpp
+        src/Core/Mesh/Grass.h
 )
 
 add_executable(playground

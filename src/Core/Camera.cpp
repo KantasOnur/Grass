@@ -32,7 +32,7 @@ void Camera::moveCamera(const CameraMoveEvent &event)
     if(Input::keyMap[GLFW_KEY_ESCAPE] == Press) {Game::inputManager_->switchModeTo("Gui"); return;}
 
 
-    const float speed = 0.001f;
+    const float speed = 10.0f*Game::deltaTime_;
     right_ = glm::normalize(glm::cross(front_, up_));
     glm::vec3 movement = glm::vec3(0.0f);
 

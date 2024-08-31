@@ -4,11 +4,11 @@
 
 class InstancedMesh : public Mesh
 {
-private:
+protected:
     unsigned int instanceVbo_;
     int count_;
 public:
-    InstancedMesh(const std::vector<glm::vec2>& positions, const std::vector<Vertex>& vertices_, const std::vector<Index>& indices_, std::unique_ptr<Shader>&& shader);
+    InstancedMesh(const std::vector<glm::vec2>& positions, const std::vector<Vertex>& vertices, const std::vector<Index>& indices, std::unique_ptr<Shader>&& shader);
     void draw(const Camera &camera) override;
 };
 

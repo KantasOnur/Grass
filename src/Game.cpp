@@ -17,13 +17,14 @@ void Game::run()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while(window_->isOpen())
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         scene_->render();
         EventManager::getInstance().triggerEvent(KeyPressEvent(0, Release));
         window_->update();
+        deltaTime_ = window_->getDeltaTime();
+        std::cout << 1 / deltaTime_ << std::endl;
     }
     Gui::destroyInstance();
 }
